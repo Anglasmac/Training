@@ -9,18 +9,20 @@ interface CardProps {
   onClick?: () => void;
 }
 
+interface MealCardMeal {
+  uuid: string;
+  name: string;
+  category: string;
+  description: string;
+  price: number;
+  available: boolean;
+}
+
 interface MealCardProps {
-  meal: {
-    uuid: string;
-    name: string;
-    category: string;
-    description: string;
-    price: number;
-    available: boolean;
-  };
+  meal: MealCardMeal;
   categoryLabels: Record<string, string>;
-  onEdit?: (meal: any) => void;
-  onDelete?: (meal: any) => void;
+  onEdit?: (meal: MealCardMeal) => void;
+  onDelete?: (meal: MealCardMeal) => void;
   className?: string;
 }
 

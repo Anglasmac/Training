@@ -14,17 +14,20 @@ interface DashboardScreenProps {
 const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
   const currentTab = dashboardTabs.find(tab => tab.id === activeTab) ?? dashboardTabs[0];
   const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = async () => {
-    setLoading(true);
+  const load = async (showLoading = true) => {
+    if (showLoading) {
+      setLoading(true);
+    }
+
     setError(null);
     try {
       const d = await fetchDashboardData();
       setData(d);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+    } catch {
+      setError('No se pudo cargar la información del dashboard.');
       setData(null);
     } finally {
       setLoading(false);
@@ -32,7 +35,7 @@ const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
   };
 
   useEffect(() => {
-    load();
+    void load(false);
   }, []);
 
   const stats: DashboardStat[] = data
@@ -66,7 +69,7 @@ const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
         <div className='alert alert-error'>
           <div>Error al cargar estadísticas: {error}</div>
           <div style={{ marginTop: 8 }}>
-            <button className='tab-button' onClick={load} type='button'>Reintentar</button>
+            <button className='tab-button' onClick={() => void load()} type='button'>Reintentar</button>
           </div>
         </div>
       )}

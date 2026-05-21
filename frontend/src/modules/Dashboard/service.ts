@@ -30,7 +30,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
         orders: json.orders ?? ({ total: 0, pending: 0, delivered: 0, totalRevenue: 0, pendingRevenue: 0, deliveredRevenue: 0 } as OrderStats),
       };
     }
-  } catch (err) {
+  } catch {
     // ignore and fallback
   }
 
