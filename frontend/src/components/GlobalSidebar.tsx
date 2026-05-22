@@ -9,41 +9,131 @@ const Icon = ({ name }: { name: string }) => {
   switch (name) {
     case 'dashboard':
       return (
-        <svg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' className='nav-icon'>
-          <rect x='3' y='3' width='8' height='8' rx='2' stroke='currentColor' strokeWidth='1.4' />
-          <rect x='13' y='3' width='8' height='18' rx='2' stroke='currentColor' strokeWidth='1.4' />
+        <svg
+          width='18'
+          height='18'
+          viewBox='0 0 24 24'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+          className='nav-icon'
+        >
+          <rect
+            x='3'
+            y='3'
+            width='8'
+            height='8'
+            rx='2'
+            stroke='currentColor'
+            strokeWidth='1.4'
+          />
+          <rect
+            x='13'
+            y='3'
+            width='8'
+            height='18'
+            rx='2'
+            stroke='currentColor'
+            strokeWidth='1.4'
+          />
         </svg>
       );
     case 'customers':
       return (
-        <svg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' className='nav-icon'>
-          <path d='M8 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' stroke='currentColor' strokeWidth='1.4' />
-          <path d='M14 20a6 6 0 0 0-12 0' stroke='currentColor' strokeWidth='1.4' />
-          <path d='M20 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' stroke='currentColor' strokeWidth='1.4' />
-          <path d='M20 20a6 6 0 0 0-12 0' stroke='currentColor' strokeWidth='1.4' />
+        <svg
+          width='18'
+          height='18'
+          viewBox='0 0 24 24'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+          className='nav-icon'
+        >
+          <path
+            d='M8 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
+            stroke='currentColor'
+            strokeWidth='1.4'
+          />
+          <path
+            d='M14 20a6 6 0 0 0-12 0'
+            stroke='currentColor'
+            strokeWidth='1.4'
+          />
+          <path
+            d='M20 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
+            stroke='currentColor'
+            strokeWidth='1.4'
+          />
+          <path
+            d='M20 20a6 6 0 0 0-12 0'
+            stroke='currentColor'
+            strokeWidth='1.4'
+          />
         </svg>
       );
     case 'meals':
       return (
-        <svg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' className='nav-icon'>
-          <path d='M3 7h18v10H3z' stroke='currentColor' strokeWidth='1.4' strokeLinecap='round' strokeLinejoin='round' />
-          <path d='M12 7v10' stroke='currentColor' strokeWidth='1.4' strokeLinecap='round' />
+        <svg
+          width='18'
+          height='18'
+          viewBox='0 0 24 24'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+          className='nav-icon'
+        >
+          <path
+            d='M3 7h18v10H3z'
+            stroke='currentColor'
+            strokeWidth='1.4'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          />
+          <path
+            d='M12 7v10'
+            stroke='currentColor'
+            strokeWidth='1.4'
+            strokeLinecap='round'
+          />
         </svg>
       );
     case 'orders':
     default:
       return (
-        <svg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' className='nav-icon'>
-          <path d='M3 7h18' stroke='currentColor' strokeWidth='1.4' strokeLinecap='round' />
-          <path d='M7 11h10' stroke='currentColor' strokeWidth='1.4' strokeLinecap='round' />
-          <path d='M9 15h6' stroke='currentColor' strokeWidth='1.4' strokeLinecap='round' />
+        <svg
+          width='18'
+          height='18'
+          viewBox='0 0 24 24'
+          fill='none'
+          xmlns='http://www.w3.org/2000/svg'
+          className='nav-icon'
+        >
+          <path
+            d='M3 7h18'
+            stroke='currentColor'
+            strokeWidth='1.4'
+            strokeLinecap='round'
+          />
+          <path
+            d='M7 11h10'
+            stroke='currentColor'
+            strokeWidth='1.4'
+            strokeLinecap='round'
+          />
+          <path
+            d='M9 15h6'
+            stroke='currentColor'
+            strokeWidth='1.4'
+            strokeLinecap='round'
+          />
         </svg>
       );
   }
 };
 
 const modules: Array<{ id: ModuleId; label: string; description: string }> = [
-  { id: 'dashboard', label: 'Dashboard', description: 'Vista general del sistema' },
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    description: 'Vista general del sistema',
+  },
   { id: 'customers', label: 'Clientes', description: 'Gestión de clientes' },
   { id: 'meals', label: 'Combos', description: 'Gestión de menú' },
   { id: 'orders', label: 'Pedidos', description: 'Gestión de pedidos' },
@@ -55,7 +145,13 @@ const GlobalSidebar = ({ activeModule, onNavigate }: GlobalSidebarProps) => {
       <div className='sidebar-top'>
         <div className='brand'>
           <div className='brand-logo' aria-hidden>
-            <svg width='36' height='36' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <svg
+              width='36'
+              height='36'
+              viewBox='0 0 24 24'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
               <circle cx='12' cy='12' r='10' fill='url(#g)' />
               <defs>
                 <linearGradient id='g' x1='0' x2='1'>
@@ -66,7 +162,9 @@ const GlobalSidebar = ({ activeModule, onNavigate }: GlobalSidebarProps) => {
             </svg>
           </div>
           <div className='brand-meta'>
-            <div className='back-row'>← <span className='back-text'>Gestión del local</span></div>
+            <div className='back-row'>
+              ← <span className='back-text'>Gestión del local</span>
+            </div>
             <div className='brand-name'>D.CC</div>
           </div>
         </div>
@@ -76,7 +174,10 @@ const GlobalSidebar = ({ activeModule, onNavigate }: GlobalSidebarProps) => {
         <div className='nav-heading'>Menú</div>
         <ul className='nav-list'>
           {modules.map(mod => (
-            <li key={mod.id} className={`nav-item ${mod.id === activeModule ? 'active' : ''}`}>
+            <li
+              key={mod.id}
+              className={`nav-item ${mod.id === activeModule ? 'active' : ''}`}
+            >
               <button
                 type='button'
                 onClick={() => onNavigate(mod.id)}
@@ -104,12 +205,18 @@ const GlobalSidebar = ({ activeModule, onNavigate }: GlobalSidebarProps) => {
       </nav>
 
       <div className='profile-card'>
-        <img alt='avatar' src='https://i.pravatar.cc/40?img=12' className='avatar' />
+        <img
+          alt='avatar'
+          src='https://i.pravatar.cc/40?img=12'
+          className='avatar'
+        />
         <div className='profile-meta'>
           <div className='profile-name'>John Holland</div>
           <div className='profile-role'>Admin</div>
         </div>
-        <button className='profile-actions' aria-label='Más acciones'>⋯</button>
+        <button className='profile-actions' aria-label='Más acciones'>
+          ⋯
+        </button>
       </div>
     </aside>
   );

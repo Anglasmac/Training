@@ -1,4 +1,8 @@
-import { dashboardHighlightsByTab, dashboardStatsByTab, dashboardTabs } from './constants';
+import {
+  dashboardHighlightsByTab,
+  dashboardStatsByTab,
+  dashboardTabs,
+} from './constants';
 import { Hero, Panel } from './components';
 import StatsGrid from './components/StatsGrid';
 import type { TabId, DashboardStat } from './types';
@@ -12,7 +16,8 @@ interface DashboardScreenProps {
 }
 
 const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
-  const currentTab = dashboardTabs.find(tab => tab.id === activeTab) ?? dashboardTabs[0];
+  const currentTab =
+    dashboardTabs.find(tab => tab.id === activeTab) ?? dashboardTabs[0];
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,30 +51,48 @@ const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
           { label: 'Máx. dirección', value: 500 },
         ]
       : activeTab === 'meals'
-      ? [
-          { label: 'Combos totales', value: data.mealsCount },
-          { label: 'Disponibles', value: data.mealsAvailable },
-          { label: 'Precio promedio', value: '$18.500' },
-        ]
-      : [
-          { label: 'Pedidos totales', value: data.orders.total },
-          { label: 'Pendientes', value: data.orders.pending },
-          { label: 'Ingresos', value: new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(data.orders.totalRevenue) },
-        ]
+        ? [
+            { label: 'Combos totales', value: data.mealsCount },
+            { label: 'Disponibles', value: data.mealsAvailable },
+            { label: 'Precio promedio', value: '$18.500' },
+          ]
+        : [
+            { label: 'Pedidos totales', value: data.orders.total },
+            { label: 'Pendientes', value: data.orders.pending },
+            {
+              label: 'Ingresos',
+              value: new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+              }).format(data.orders.totalRevenue),
+            },
+          ]
     : dashboardStatsByTab[activeTab];
 
   const highlights = dashboardHighlightsByTab[activeTab];
 
   return (
     <>
-      <Hero title={currentTab.label} subtitle={currentTab.description} badge='Solo front' />
+      <Hero
+        title={currentTab.label}
+        subtitle={currentTab.description}
+        badge='Solo front'
+      />
 
-      {loading && <div className='loading'>Cargando métricas del dashboard…</div>}
+      {loading && (
+        <div className='loading'>Cargando métricas del dashboard…</div>
+      )}
       {error && (
         <div className='alert alert-error'>
           <div>Error al cargar estadísticas: {error}</div>
           <div style={{ marginTop: 8 }}>
-            <button className='tab-button' onClick={() => void load()} type='button'>Reintentar</button>
+            <button
+              className='tab-button'
+              onClick={() => void load()}
+              type='button'
+            >
+              Reintentar
+            </button>
           </div>
         </div>
       )}

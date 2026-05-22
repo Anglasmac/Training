@@ -33,10 +33,7 @@ const Modal: React.FC<ModalProps> = ({
           <p>{message}</p>
         </div>
         <div className='modal-footer'>
-          <button
-            className='modal-btn modal-btn-cancel'
-            onClick={onCancel}
-          >
+          <button className='modal-btn modal-btn-cancel' onClick={onCancel}>
             {cancelText}
           </button>
           <button

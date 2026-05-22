@@ -22,7 +22,8 @@ const categoryLabels: Record<string, string> = {
 };
 
 const Meals = () => {
-  const [savedMeals, setSavedMeals] = usePersistentList<MealResponse>('createdMeals');
+  const [savedMeals, setSavedMeals] =
+    usePersistentList<MealResponse>('createdMeals');
   const [meals, setMeals] = useState<MealResponse[]>(() => savedMeals);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -40,7 +41,10 @@ const Meals = () => {
 
   const mergeMeal = (meal: MealResponse) => {
     setMeals(prev => [meal, ...prev.filter(item => item.uuid !== meal.uuid)]);
-    setSavedMeals(prev => [meal, ...prev.filter(item => item.uuid !== meal.uuid)]);
+    setSavedMeals(prev => [
+      meal,
+      ...prev.filter(item => item.uuid !== meal.uuid),
+    ]);
   };
 
   const handleSearchMeal = async (uuid: string) => {
@@ -56,7 +60,7 @@ const Meals = () => {
       const meal = await mealService.getById(uuid.trim());
       setMeals([meal]);
       setSuccess('Combo encontrado');
-    } catch (err) {
+    } catch {
       setMeals(savedMeals);
       setError('Combo no encontrado');
     } finally {
@@ -116,7 +120,7 @@ const Meals = () => {
       setSuccess('Combo eliminado correctamente');
       setMeals(prev => prev.filter(meal => meal.uuid !== uuid));
       setSavedMeals(prev => prev.filter(meal => meal.uuid !== uuid));
-    } catch (err) {
+    } catch {
       setError('Error al eliminar combo');
     } finally {
       setLoading(false);
@@ -144,10 +148,10 @@ const Meals = () => {
         <div className='section-heading-group'>
           <h2>Gestión de Combos</h2>
           <p className='section-description'>
-            Busca por UUID, crea o edita un combo, y revisa el estado de disponibilidad sin perder el foco operativo.
+            Busca por UUID, crea o edita un combo, y revisa el estado de
+            disponibilidad sin perder el foco operativo.
           </p>
         </div>
-        
       </div>
 
       {error && <div className='alert alert-error'>{error}</div>}
@@ -176,9 +180,28 @@ const Meals = () => {
         >
           <div className='search-pill'>
             <div className='search-input-wrapper'>
-              <svg className='search-icon' width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                <path d='M21 21L15.8 15.8' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'/>
-                <path d='M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'/>
+              <svg
+                className='search-icon'
+                width='18'
+                height='18'
+                viewBox='0 0 24 24'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M21 21L15.8 15.8'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+                <path
+                  d='M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
               </svg>
               <input
                 type='text'
@@ -193,7 +216,13 @@ const Meals = () => {
               />
             </div>
 
-            <Button className='btn-new-combo' onClick={() => { setEditingMeal(null); setShowForm(true); }}>
+            <Button
+              className='btn-new-combo'
+              onClick={() => {
+                setEditingMeal(null);
+                setShowForm(true);
+              }}
+            >
               Nuevo Combo
             </Button>
           </div>
@@ -281,7 +310,10 @@ const Meals = () => {
                     type='checkbox'
                     checked={formData.is_available}
                     onChange={e =>
-                      setFormData({ ...formData, is_available: e.target.checked })
+                      setFormData({
+                        ...formData,
+                        is_available: e.target.checked,
+                      })
                     }
                   />
                   Disponible

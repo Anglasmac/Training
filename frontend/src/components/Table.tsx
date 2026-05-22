@@ -5,7 +5,9 @@ interface TableColumn<T extends Record<string, unknown>> {
   className?: string;
 }
 
-interface TableProps<T extends Record<string, unknown> = Record<string, unknown>> {
+interface TableProps<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> {
   data: T[];
   columns: TableColumn<T>[];
   loading?: boolean;
@@ -13,7 +15,7 @@ interface TableProps<T extends Record<string, unknown> = Record<string, unknown>
   className?: string;
 }
 
-const Table = <T extends Record<string, unknown>,>({
+const Table = <T extends Record<string, unknown>>({
   data,
   columns,
   loading = false,

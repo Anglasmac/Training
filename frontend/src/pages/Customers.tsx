@@ -10,8 +10,11 @@ import { usePersistentList } from '../hooks/usePersistentList';
 type CustomerRow = CustomerBase & { id?: number };
 
 const Customers = () => {
-  const [createdCustomers, setCreatedCustomers] = usePersistentList<CustomerRow>('createdCustomers');
-  const [customers, setCustomers] = useState<CustomerRow[]>(() => createdCustomers);
+  const [createdCustomers, setCreatedCustomers] =
+    usePersistentList<CustomerRow>('createdCustomers');
+  const [customers, setCustomers] = useState<CustomerRow[]>(
+    () => createdCustomers
+  );
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<string | null>(null);
@@ -42,7 +45,10 @@ const Customers = () => {
           phone_number: formData.phone_number,
           address: formData.address,
         };
-        const updatedCustomer = await customerService.update(editingCustomer, updateData);
+        const updatedCustomer = await customerService.update(
+          editingCustomer,
+          updateData
+        );
         setCustomers(prev =>
           prev.map(customer =>
             customer.document_number === editingCustomer
@@ -64,7 +70,9 @@ const Customers = () => {
         const createdCustomer = await customerService.create(formData);
         setCustomers(prev => [createdCustomer, ...prev]);
         setCreatedCustomers(prev => [createdCustomer, ...prev]); // Also track in created list
-        setSuccess('Cliente creado correctamente: ' + createdCustomer.document_number);
+        setSuccess(
+          'Cliente creado correctamente: ' + createdCustomer.document_number
+        );
         // Clear form but keep showing the newly created customer in the results
         setFormData({
           document_number: '',
@@ -97,7 +105,7 @@ const Customers = () => {
       const customer = await customerService.getByDocument(document);
       setCustomers([customer]);
       setSuccess('Cliente encontrado');
-    } catch (err) {
+    } catch {
       setError('Cliente no encontrado');
       setCustomers([]);
     } finally {
@@ -138,11 +146,15 @@ const Customers = () => {
       setLoading(true);
       await customerService.delete(customerToDelete);
       setSuccess('Cliente eliminado correctamente');
-      setCustomers(prev => prev.filter(customer => customer.document_number !== customerToDelete));
-      setCreatedCustomers(prev => prev.filter(customer => customer.document_number !== customerToDelete));
+      setCustomers(prev =>
+        prev.filter(customer => customer.document_number !== customerToDelete)
+      );
+      setCreatedCustomers(prev =>
+        prev.filter(customer => customer.document_number !== customerToDelete)
+      );
       setDeleteModalOpen(false);
       setCustomerToDelete(null);
-    } catch (err) {
+    } catch {
       setError('Error al eliminar cliente');
       setDeleteModalOpen(false);
       setCustomerToDelete(null);
@@ -173,12 +185,12 @@ const Customers = () => {
   const formatDocument = (value: string): string => {
     // Remove spaces and convert to uppercase
     let formatted = value.trim().toUpperCase();
-    
+
     // If it doesn't contain a dash, assume it's just numbers and prepend CC-
     if (!formatted.includes('-') && formatted.match(/^\d+$/)) {
       formatted = `CC-${formatted}`;
     }
-    
+
     return formatted;
   };
 
@@ -218,7 +230,8 @@ const Customers = () => {
         <div className='section-heading-group'>
           <h2>Gestión de Clientes</h2>
           <p className='section-description'>
-            Consulta, crea, edita y elimina clientes por documento sin perder el contexto de la pantalla.
+            Consulta, crea, edita y elimina clientes por documento sin perder el
+            contexto de la pantalla.
           </p>
         </div>
         <Button variant='success' onClick={() => setShowForm(!showForm)}>
@@ -240,9 +253,9 @@ const Customers = () => {
                 placeholder='CC-12345678'
                 value={formData.document_number}
                 onChange={e =>
-                  setFormData({ 
-                    ...formData, 
-                    document_number: formatDocument(e.target.value) 
+                  setFormData({
+                    ...formData,
+                    document_number: formatDocument(e.target.value),
                   })
                 }
                 disabled={!!editingCustomer}

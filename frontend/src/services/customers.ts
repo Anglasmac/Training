@@ -12,13 +12,19 @@ export const customerService = {
     if (!response.ok) throw new Error('Error al obtener lista de clientes');
     return response.json();
   },
-  async getByDocument(document: string): Promise<CustomerBase & { uuid: string; created_at: string; updated_at?: string }> {
+  async getByDocument(
+    document: string
+  ): Promise<
+    CustomerBase & { uuid: string; created_at: string; updated_at?: string }
+  > {
     const response = await fetch(`${API_BASE_URL}/customers/${document}`);
     if (!response.ok) throw new Error('Error al obtener cliente');
     return response.json();
   },
 
-  async create(customer: CustomerCreate): Promise<CustomerBase & { uuid: string; created_at: string }> {
+  async create(
+    customer: CustomerCreate
+  ): Promise<CustomerBase & { uuid: string; created_at: string }> {
     const response = await fetch(`${API_BASE_URL}/customers/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -31,7 +37,10 @@ export const customerService = {
     return response.json();
   },
 
-  async update(document: string, customer: CustomerUpdate): Promise<Partial<CustomerBase>> {
+  async update(
+    document: string,
+    customer: CustomerUpdate
+  ): Promise<Partial<CustomerBase>> {
     const response = await fetch(`${API_BASE_URL}/customers/${document}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

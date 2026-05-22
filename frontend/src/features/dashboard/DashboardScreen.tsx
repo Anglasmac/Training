@@ -1,4 +1,8 @@
-import { dashboardHighlightsByTab, dashboardStatsByTab, dashboardTabs } from './constants';
+import {
+  dashboardHighlightsByTab,
+  dashboardStatsByTab,
+  dashboardTabs,
+} from './constants';
 import { Hero, Panel, Sidebar, StatsGrid } from './components';
 import type { TabId, DashboardStat } from './types';
 import { useEffect, useState } from 'react';
@@ -11,11 +15,14 @@ interface DashboardScreenProps {
 }
 
 const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
-  const currentTab = dashboardTabs.find(tab => tab.id === activeTab) ?? dashboardTabs[0];
+  const currentTab =
+    dashboardTabs.find(tab => tab.id === activeTab) ?? dashboardTabs[0];
   const [data, setData] = useState<DashboardData | null>(null);
 
   useEffect(() => {
-    fetchDashboardData().then(setData).catch(() => undefined);
+    fetchDashboardData()
+      .then(setData)
+      .catch(() => undefined);
   }, []);
 
   const stats: DashboardStat[] = data
@@ -26,16 +33,22 @@ const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
           { label: 'Máx. dirección', value: 500 },
         ]
       : activeTab === 'meals'
-      ? [
-          { label: 'Combos totales', value: data.mealsCount },
-          { label: 'Disponibles', value: data.mealsAvailable },
-          { label: 'Precio promedio', value: '$18.500' },
-        ]
-      : [
-          { label: 'Pedidos totales', value: data.orders.total },
-          { label: 'Pendientes', value: data.orders.pending },
-          { label: 'Ingresos', value: new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(data.orders.totalRevenue) },
-        ]
+        ? [
+            { label: 'Combos totales', value: data.mealsCount },
+            { label: 'Disponibles', value: data.mealsAvailable },
+            { label: 'Precio promedio', value: '$18.500' },
+          ]
+        : [
+            { label: 'Pedidos totales', value: data.orders.total },
+            { label: 'Pendientes', value: data.orders.pending },
+            {
+              label: 'Ingresos',
+              value: new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+              }).format(data.orders.totalRevenue),
+            },
+          ]
     : dashboardStatsByTab[activeTab];
 
   const highlights = dashboardHighlightsByTab[activeTab];
@@ -45,7 +58,11 @@ const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
       <Sidebar activeTab={activeTab} onNavigate={onTabChange} />
 
       <main className='main-content'>
-        <Hero title={currentTab.label} subtitle={currentTab.description} badge='Solo front' />
+        <Hero
+          title={currentTab.label}
+          subtitle={currentTab.description}
+          badge='Solo front'
+        />
 
         <StatsGrid items={stats} />
 

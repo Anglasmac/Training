@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const readStoredList = <T,>(storageKey: string): T[] => {
+const readStoredList = <T>(storageKey: string): T[] => {
   if (typeof window === 'undefined') {
     return [];
   }
@@ -18,7 +18,7 @@ const readStoredList = <T,>(storageKey: string): T[] => {
   }
 };
 
-export const usePersistentList = <T,>(storageKey: string) => {
+export const usePersistentList = <T>(storageKey: string) => {
   const [items, setItems] = useState<T[]>(() => readStoredList<T>(storageKey));
 
   useEffect(() => {

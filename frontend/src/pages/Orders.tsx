@@ -9,7 +9,8 @@ import type { OrderCreate, OrderResponse } from '../models/orders';
 import { usePersistentList } from '../hooks/usePersistentList';
 
 const Orders = () => {
-  const [savedOrders, setSavedOrders] = usePersistentList<OrderResponse>('createdOrders');
+  const [savedOrders, setSavedOrders] =
+    usePersistentList<OrderResponse>('createdOrders');
   const [orders, setOrders] = useState<OrderResponse[]>(() => savedOrders);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -34,7 +35,10 @@ const Orders = () => {
 
       const createdOrder = await orderService.create(formData);
       setOrders(prev => [createdOrder, ...prev]);
-      setSavedOrders(prev => [createdOrder, ...prev.filter(order => order.uuid !== createdOrder.uuid)]);
+      setSavedOrders(prev => [
+        createdOrder,
+        ...prev.filter(order => order.uuid !== createdOrder.uuid),
+      ]);
       setSuccess('Pedido creado correctamente');
       resetForm();
     } catch (err) {
@@ -57,7 +61,7 @@ const Orders = () => {
         prev.map(order => (order.uuid === uuid ? updatedOrder : order))
       );
       setSuccess('Pedido marcado como entregado');
-    } catch (err) {
+    } catch {
       setError('Error al actualizar pedido');
     } finally {
       setLoading(false);
@@ -129,7 +133,8 @@ const Orders = () => {
         <div className='section-heading-group'>
           <h2>Gestión de Pedidos</h2>
           <p className='section-description'>
-            Crea pedidos, valida cliente y combo, y marca entregas desde la sesión activa.
+            Crea pedidos, valida cliente y combo, y marca entregas desde la
+            sesión activa.
           </p>
         </div>
         <Button variant='success' onClick={() => setShowForm(!showForm)}>
@@ -216,7 +221,10 @@ const Orders = () => {
                   placeholder='Notas especiales, preferencias, etc.'
                   value={formData.additional_info}
                   onChange={e =>
-                    setFormData({ ...formData, additional_info: e.target.value })
+                    setFormData({
+                      ...formData,
+                      additional_info: e.target.value,
+                    })
                   }
                   maxLength={511}
                 />

@@ -21,10 +21,19 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
         customersCount: json.customersCount ?? 0,
         mealsCount: json.mealsCount ?? 0,
         mealsAvailable: json.mealsAvailable ?? 0,
-        orders: json.orders ?? ({ total: 0, pending: 0, delivered: 0, totalRevenue: 0, pendingRevenue: 0, deliveredRevenue: 0 } as OrderStats),
+        orders:
+          json.orders ??
+          ({
+            total: 0,
+            pending: 0,
+            delivered: 0,
+            totalRevenue: 0,
+            pendingRevenue: 0,
+            deliveredRevenue: 0,
+          } as OrderStats),
       };
     }
-  } catch (err) {
+  } catch {
     // ignore and fallback
   }
 
@@ -34,20 +43,27 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     orderService.getAll(),
   ]);
 
-  const mealsAvailable = meals.filter(m => (m.is_available ?? true)).length;
+  const mealsAvailable = meals.filter(m => m.is_available ?? true).length;
 
   const totalOrders = orders.length;
   const pending = orders.filter(o => !o.is_delivered).length;
   const delivered = orders.filter(o => o.is_delivered).length;
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.total_with_iva ?? 0), 0);
+  const totalRevenue = orders.reduce(
+    (sum, o) => sum + (o.total_with_iva ?? 0),
+    0
+  );
 
   const orderStats: OrderStats = {
     total: totalOrders,
     pending,
     delivered,
     totalRevenue,
-    pendingRevenue: orders.filter(o => !o.is_delivered).reduce((s, o) => s + (o.total_with_iva ?? 0), 0),
-    deliveredRevenue: orders.filter(o => o.is_delivered).reduce((s, o) => s + (o.total_with_iva ?? 0), 0),
+    pendingRevenue: orders
+      .filter(o => !o.is_delivered)
+      .reduce((s, o) => s + (o.total_with_iva ?? 0), 0),
+    deliveredRevenue: orders
+      .filter(o => o.is_delivered)
+      .reduce((s, o) => s + (o.total_with_iva ?? 0), 0),
   };
 
   return {

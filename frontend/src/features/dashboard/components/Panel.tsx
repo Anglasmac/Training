@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react';
 
-const Panel = ({ children, title }: { children: ReactNode; title?: string }) => (
+const Panel = ({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title?: string;
+}) => (
   <article className='panel-card'>
     {title && (
       <div className='panel-heading'>

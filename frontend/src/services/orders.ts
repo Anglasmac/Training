@@ -1,8 +1,4 @@
-import type {
-  OrderCreate,
-  OrderResponse,
-  OrderUpdate,
-} from '../models/orders';
+import type { OrderCreate, OrderResponse, OrderUpdate } from '../models/orders';
 
 const API_BASE_URL = '/api';
 
@@ -20,7 +16,9 @@ export const orderService = {
   },
 
   async getByDocument(document: string): Promise<OrderResponse[]> {
-    const response = await fetch(`${API_BASE_URL}/orders/by-document/${document}`);
+    const response = await fetch(
+      `${API_BASE_URL}/orders/by-document/${document}`
+    );
     if (!response.ok) throw new Error('Error al obtener pedidos del cliente');
     return response.json();
   },
