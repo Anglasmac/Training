@@ -1,6 +1,7 @@
 import type { MealCreate, MealUpdate, MealResponse } from '../models/meals';
 
-const API_BASE_URL = '/api';
+const VITE_BASE = import.meta.env.VITE_API_URL ?? '';
+const API_BASE_URL = VITE_BASE ? `${VITE_BASE.replace(/\/$/, '')}/api` : '/api';
 
 export const mealService = {
   async getAll(): Promise<MealResponse[]> {

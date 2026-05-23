@@ -1,6 +1,3 @@
-import { customerService } from '../../services/customers';
-import { mealService } from '../../services/meals';
-import { orderService } from '../../services/orders';
 import type { OrderStats } from '../../models/orders';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -12,17 +9,11 @@ export type DashboardData = {
   orders: OrderStats;
 };
 
-/**
- * Tries to fetch a single dashboard summary from the backend (`/dashboard/summary`).
- * If the endpoint is not available (404 or network error), falls back to fetching
- * each resource individually using the existing services.
- */
 export const fetchDashboardData = async (): Promise<DashboardData> => {
   try {
     const resp = await fetch(`${API_BASE_URL}/dashboard/summary`);
     if (resp.ok) {
       const json = await resp.json();
-      // Expecting shape: { customersCount, mealsCount, mealsAvailable, orders: { ... } }
       return {
         customersCount: json.customersCount ?? 0,
         mealsCount: json.mealsCount ?? 0,
@@ -43,12 +34,15 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     // ignore and fallback
   }
 
-  // Fallback: request each resource separately
-  const [customers, meals, orders] = await Promise.all([
-    customerService.getAll(),
-    mealService.getAll(),
-    orderService.getAll(),
+  const [customersResp, mealsResp, ordersResp] = await Promise.all([
+    fetch('/api/customers/'),
+    fetch('/api/meals/'),
+    fetch('/api/orders/'),
   ]);
+
+  const customers = customersResp.ok ? await customersResp.json() : [];
+  const meals = mealsResp.ok ? await mealsResp.json() : [];
+  const orders = ordersResp.ok ? await ordersResp.json() : [];
 
   const mealsAvailable = meals.filter(m => m.is_available ?? true).length;
 

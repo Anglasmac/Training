@@ -73,11 +73,7 @@ const DashboardScreen = ({ activeTab, onTabChange }: DashboardScreenProps) => {
 
   return (
     <>
-      <Hero
-        title={currentTab.label}
-        subtitle={currentTab.description}
-        badge='Solo front'
-      />
+      <Hero title={currentTab.label} subtitle={currentTab.description} />
 
       {loading && (
         <div className='loading'>Cargando métricas del dashboard…</div>

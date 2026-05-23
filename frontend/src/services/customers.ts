@@ -4,7 +4,8 @@ import type {
   CustomerUpdate,
 } from '../models/customers';
 
-const API_BASE_URL = '/api';
+const VITE_BASE = import.meta.env.VITE_API_URL ?? '';
+const API_BASE_URL = VITE_BASE ? `${VITE_BASE.replace(/\/$/, '')}/api` : '/api';
 
 export const customerService = {
   async getAll(): Promise<import('../models/customers').CustomerResponse[]> {
