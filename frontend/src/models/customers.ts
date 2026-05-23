@@ -9,7 +9,7 @@ export interface CustomerBase {
 
 // Customer creation interface (with validation rules)
 export interface CustomerCreate extends CustomerBase {
-  /** Must match format TIPO-NUMERO (CC-12345678, CE-123456, P-1234567) */
+  /** Must match the TYPE-NUMBER format (CC-12345678, CE-123456, P-1234567) */
   document_number: string;
   /** Full name of the customer */
   full_name: string;

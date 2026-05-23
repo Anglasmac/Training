@@ -1,25 +1,27 @@
-interface TableColumn {
+interface TableColumn<T extends Record<string, unknown>> {
   key: string;
   label: string;
-  render?: (value: any, row: any) => React.ReactNode;
+  render?: (value: unknown, row: T) => React.ReactNode;
   className?: string;
 }
 
-interface TableProps {
-  data: any[];
-  columns: TableColumn[];
+interface TableProps<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> {
+  data: T[];
+  columns: TableColumn<T>[];
   loading?: boolean;
   emptyMessage?: string;
   className?: string;
 }
 
-const Table = ({
+const Table = <T extends Record<string, unknown>>({
   data,
   columns,
   loading = false,
   emptyMessage = 'No hay datos disponibles',
   className = '',
-}: TableProps) => {
+}: TableProps<T>) => {
   if (loading) {
     return (
       <div className={`table-container ${className}`}>
@@ -55,7 +57,7 @@ const Table = ({
         </thead>
         <tbody>
           {data.map((row, index) => (
-            <tr key={row.id || row.uuid || index}>
+            <tr key={String(row.id ?? row.uuid ?? index)}>
               {columns.map(column => (
                 <td key={column.key} className={column.className}>
                   {column.render

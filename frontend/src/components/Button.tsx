@@ -7,6 +7,7 @@ interface ButtonProps {
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
+  title?: string;
 }
 
 const Button = ({
@@ -17,6 +18,7 @@ const Button = ({
   onClick,
   type = 'button',
   className = '',
+  title,
 }: ButtonProps) => {
   const baseClasses = 'btn';
   const variantClasses = `btn-${variant}`;
@@ -35,6 +37,7 @@ const Button = ({
   return (
     <button
       type={type}
+      title={title}
       className={combinedClasses}
       onClick={onClick}
       disabled={disabled}
