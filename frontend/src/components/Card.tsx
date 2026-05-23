@@ -26,13 +26,6 @@ interface MealCardProps {
   className?: string;
 }
 
-interface StatCardProps {
-  title: string;
-  value: string | number;
-  variant?: 'default' | 'success' | 'warning' | 'danger';
-  className?: string;
-}
-
 const getCategoryIcon = (category: string) => {
   const iconMap: Record<string, React.ReactNode> = {
     HAMBURGERS_AND_HOTDOGS: (
@@ -311,26 +304,5 @@ const MealCard = ({
   );
 };
 
-const StatCard = ({
-  title,
-  value,
-  variant = 'default',
-  className = '',
-}: StatCardProps) => {
-  return (
-    <Card className={`stat-card stat-card-${variant} ${className}`}>
-      <div className='stat-content'>
-        <h3 className='stat-title'>{title}</h3>
-        <span className='stat-value'>{value}</span>
-      </div>
-    </Card>
-  );
-};
-
-// Separar el footer como un componente anidado
-Card.Footer = ({ children }: { children: React.ReactNode }) => (
-  <div className='card-footer'>{children}</div>
-);
-
-export { Card, MealCard, StatCard };
+export { Card, MealCard };
 export default Card;

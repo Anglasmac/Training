@@ -178,9 +178,9 @@ export const isOrderResponseWithDetails = (
   obj: unknown
 ): obj is OrderResponseWithDetails => {
   return (
-    (isOrderResponse(obj) &&
-      (obj as OrderResponseWithDetails).customer_name === undefined) ||
-    typeof (obj as OrderResponseWithDetails).customer_name === 'string'
+    isOrderResponse(obj) &&
+    ((obj as OrderResponseWithDetails).customer_name === undefined ||
+      typeof (obj as OrderResponseWithDetails).customer_name === 'string')
   );
 };
 

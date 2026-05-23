@@ -1,13 +1,11 @@
-interface TableColumn<T extends Record<string, unknown>> {
+export interface TableColumn<T> {
   key: string;
   label: string;
   render?: (value: unknown, row: T) => React.ReactNode;
   className?: string;
 }
 
-interface TableProps<
-  T extends Record<string, unknown> = Record<string, unknown>,
-> {
+interface TableProps<T> {
   data: T[];
   columns: TableColumn<T>[];
   loading?: boolean;
@@ -15,7 +13,7 @@ interface TableProps<
   className?: string;
 }
 
-const Table = <T extends Record<string, unknown>>({
+const Table = <T,>({
   data,
   columns,
   loading = false,
@@ -56,17 +54,23 @@ const Table = <T extends Record<string, unknown>>({
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => (
-            <tr key={String(row.id ?? row.uuid ?? index)}>
-              {columns.map(column => (
-                <td key={column.key} className={column.className}>
-                  {column.render
-                    ? column.render(row[column.key], row)
-                    : row[column.key]}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {data.map((row, index) => {
+            const r = row as Record<string, unknown>;
+            return (
+              <tr key={String(r.id ?? r.uuid ?? index)}>
+                {columns.map(column => {
+                  const value = r[column.key];
+                  return (
+                    <td key={column.key} className={column.className}>
+                      {column.render
+                        ? column.render(value, row)
+                        : (value as React.ReactNode)}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Table from '../components/Table';
+import Table, { type TableColumn } from '../components/Table';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import { orderService } from '../services/orders';
@@ -78,28 +78,28 @@ const Orders = () => {
     setShowForm(false);
   };
 
-  const columns = [
+  const columns: TableColumn<OrderResponse>[] = [
     { key: 'uuid', label: 'ID' },
     { key: 'document', label: 'Documento Cliente' },
     { key: 'quantity', label: 'Cantidad' },
     {
       key: 'total_with_iva',
       label: 'Total',
-      render: (value: number) => `$${value.toFixed(2)}`,
+      render: (value: unknown) => `$${(value as number).toFixed(2)}`,
     },
     {
       key: 'is_delivered',
       label: 'Estado',
-      render: (value: boolean) => (
-        <span className={value ? 'status-delivered' : 'status-pending'}>
-          {value ? 'Entregado' : 'Pendiente'}
+      render: (value: unknown) => (
+        <span className={(value as boolean) ? 'status-delivered' : 'status-pending'}>
+          {(value as boolean) ? 'Entregado' : 'Pendiente'}
         </span>
       ),
     },
     {
       key: 'order_date',
       label: 'Fecha',
-      render: (value: string) => new Date(value).toLocaleDateString('es-CO'),
+      render: (value: unknown) => new Date(value as string).toLocaleDateString('es-CO'),
     },
     {
       key: 'actions',
