@@ -18,6 +18,12 @@ class MealRepository:
     def get(self, id: int) -> Optional[Meal]:
         return self.db.query(Meal).filter(Meal.id == id).first()
 
+    def get_all(self, skip: int = 0, limit: int = 10) -> list[Meal]:
+        return self.db.query(Meal).offset(skip).limit(limit).all()
+
+    def count(self) -> int:
+        return self.db.query(Meal).count()
+
     def get_by_uuid(self, uuid: str) -> Optional[Meal]:
         """Obtener combo por UUID"""
         return self.db.query(Meal).filter(Meal.uuid == uuid).first()

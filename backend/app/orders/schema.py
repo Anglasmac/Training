@@ -47,3 +47,6 @@ class OrderResponseWithDetails(OrderResponse):
 class OrderListResponse(BaseModel):
     orders: list[OrderResponse]
     total: int
+    page: int
+    page_size: int
+    total_pages: int

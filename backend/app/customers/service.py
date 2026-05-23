@@ -77,6 +77,12 @@ class CustomerService:
         self.repository.db.refresh(customer)
         return customer
     
+    def get_all(self, page: int = 1, page_size: int = 10) -> tuple[list[Customer], int]:
+        skip = (page - 1) * page_size
+        items = self.repository.get_all(skip=skip, limit=page_size)
+        total = self.repository.count()
+        return items, total
+
     def delete(self, document: str) -> bool:
         """Eliminar cliente por documento"""
         customer = self.get_customer(document)

@@ -26,5 +26,13 @@ class Order(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), nullable=True)
     
+    @property
+    def document(self):
+        return self.customer_document
+
+    @property
+    def meal_uuid(self):
+        return self.combo_uuid
+
     def __repr__(self):
         return f"<Order(id={self.id}, uuid={self.uuid}, customer='{self.customer_document}', meal_id={self.meal_id})>"

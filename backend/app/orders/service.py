@@ -64,6 +64,12 @@ class OrderService:
         
         return self.repository.update(uuid, update_data)
     
+    def get_all(self, page: int = 1, page_size: int = 10) -> tuple[list[Order], int]:
+        skip = (page - 1) * page_size
+        items = self.repository.get_all(skip=skip, limit=page_size)
+        total = self.repository.count()
+        return items, total
+
     def get_by_uuid(self, uuid: str) -> Optional[Order]:
         """Obtener pedido por UUID"""
         return self.repository.get_by_uuid(uuid)

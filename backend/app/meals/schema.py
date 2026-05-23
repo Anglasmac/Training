@@ -51,3 +51,6 @@ class MealResponse(MealBase):
 class MealListResponse(BaseModel):
     meals: list[MealResponse]
     total: int
+    page: int
+    page_size: int
+    total_pages: int

@@ -66,3 +66,6 @@ class CustomerResponse(CustomerBase):
 class CustomerListResponse(BaseModel):
     customers: list[CustomerResponse]
     total: int
+    page: int
+    page_size: int
+    total_pages: int

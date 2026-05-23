@@ -35,6 +35,12 @@ class CustomerRepository:
         self.db.commit()
         return True
 
+    def get_all(self, skip: int = 0, limit: int = 10) -> list[Customer]:
+        return self.db.query(Customer).offset(skip).limit(limit).all()
+
+    def count(self) -> int:
+        return self.db.query(Customer).count()
+
     def get_by_document(self, document_number: str) -> Optional[Customer]:
         return self.db.query(Customer).filter(Customer.document_number == document_number).first()
     

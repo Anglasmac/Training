@@ -1,5 +1,5 @@
 # customers/controller.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 from config.database import get_db
@@ -13,6 +13,21 @@ router = APIRouter(prefix="/customers", tags=["customers"])
 def get_customer_service(db: Session = Depends(get_db)) -> CustomerService:
     repository = CustomerRepository(db)
     return CustomerService(repository)
+
+@router.get("/", response_model=CustomerListResponse)
+def get_all_customers(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=10),
+    service: CustomerService = Depends(get_customer_service)
+):
+    customers, total = service.get_all(page=page, page_size=page_size)
+    return CustomerListResponse(
+        customers=customers,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=(total + page_size - 1) // page_size
+    )
 
 @router.post("/", response_model=CustomerResponse, status_code=201)
 def create_customer(

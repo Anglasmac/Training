@@ -1,5 +1,5 @@
 # meals/controller.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 from config.database import get_db
@@ -13,6 +13,21 @@ router = APIRouter(prefix="/meals", tags=["meals"])
 def get_meal_service(db: Session = Depends(get_db)) -> MealService:
     repository = MealRepository(db)
     return MealService(repository)
+
+@router.get("/", response_model=MealListResponse)
+def get_all_meals(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=10),
+    service: MealService = Depends(get_meal_service)
+):
+    meals, total = service.get_all(page=page, page_size=page_size)
+    return MealListResponse(
+        meals=meals,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=(total + page_size - 1) // page_size
+    )
 
 @router.post("/", response_model=MealResponse, status_code=201)
 def create_meal(

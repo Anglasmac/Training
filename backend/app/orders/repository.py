@@ -22,6 +22,12 @@ class OrderRepository:
         """Obtener pedido por UUID"""
         return self.db.query(Order).filter(Order.uuid == uuid).first()
     
+    def get_all(self, skip: int = 0, limit: int = 10) -> list[Order]:
+        return self.db.query(Order).offset(skip).limit(limit).all()
+
+    def count(self) -> int:
+        return self.db.query(Order).count()
+
     def update(self, uuid: str, update_data: dict) -> Optional[Order]:
         """Actualizar pedido por UUID"""
         order = self.get_by_uuid(uuid)

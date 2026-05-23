@@ -45,6 +45,12 @@ class MealService:
         self.repository.db.refresh(meal)
         return meal
     
+    def get_all(self, page: int = 1, page_size: int = 10) -> tuple[list[Meal], int]:
+        skip = (page - 1) * page_size
+        items = self.repository.get_all(skip=skip, limit=page_size)
+        total = self.repository.count()
+        return items, total
+
     def delete(self, uuid: str) -> bool:
         """Eliminar combo por UUID"""
         return self.repository.delete_by_uuid(uuid)

@@ -1,5 +1,5 @@
 # orders/controller.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 from datetime import datetime
@@ -18,6 +18,21 @@ def get_order_service(db: Session = Depends(get_db)) -> OrderService:
     meal_repository = MealRepository(db)
     customer_repository = CustomerRepository(db)
     return OrderService(order_repository, meal_repository, customer_repository)
+
+@router.get("/", response_model=OrderListResponse)
+def get_all_orders(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=10),
+    service: OrderService = Depends(get_order_service)
+):
+    orders, total = service.get_all(page=page, page_size=page_size)
+    return OrderListResponse(
+        orders=orders,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=(total + page_size - 1) // page_size
+    )
 
 @router.post("/", response_model=OrderResponse, status_code=201)
 def create_order(
