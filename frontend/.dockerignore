@@ -1,5 +1,9 @@
 node_modules
-.git
 .pnpm-store
+.git
 .env
 *.md
+dist
+dist-ssr
+*.tsbuildinfo
+.pnpm-debug.log*
