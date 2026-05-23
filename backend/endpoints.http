@@ -1,0 +1,83 @@
+@baseUrl = http://localhost:8000
+
+### GET /customers/ — Listar clientes (paginado)
+GET {{baseUrl}}/customers/?page=1&page_size=10
+
+### POST /customers/ — Crear cliente
+POST {{baseUrl}}/customers/
+Content-Type: application/json
+
+{
+  "document_number": "CC-12345678",
+  "full_name": "Juan Pérez González",
+  "email": "juan.perez@email.com",
+  "phone_number": "3001234567",
+  "address": "Calle 123 #45-67, Bogotá"
+}
+
+### GET /customers/{document} — Obtener cliente por documento
+GET {{baseUrl}}/customers/CC-12345678
+
+### PUT /customers/{document} — Actualizar cliente
+PUT {{baseUrl}}/customers/CC-12345678
+Content-Type: application/json
+
+{
+  "full_name": "Juan Pérez Gómez",
+  "phone_number": "3007654321"
+}
+
+### DELETE /customers/{document} — Eliminar cliente
+DELETE {{baseUrl}}/customers/CC-12345678
+
+### GET /meals/ — Listar combos (paginado)
+GET {{baseUrl}}/meals/?page=1&page_size=10
+
+### POST /meals/ — Crear combo
+POST {{baseUrl}}/meals/
+Content-Type: application/json
+
+{
+  "name": "COMBO SUPER CHEESE BURGER DOBLE",
+  "category": "HAMBURGERS_AND_HOTDOGS",
+  "description": "Hamburguesa pan de ajonjolí, doble carne de 200gr, queso cheddar extra, papas fritas y gaseosa de 350ml",
+  "price_without_iva": 25000.00,
+  "is_available": true
+}
+
+### GET /meals/{uuid} — Obtener combo por UUID
+GET {{baseUrl}}/meals/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+### PUT /meals/{uuid} — Actualizar combo
+PUT {{baseUrl}}/meals/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+Content-Type: application/json
+
+{
+  "price_without_iva": 27000.00,
+  "is_available": false
+}
+
+### DELETE /meals/{uuid} — Eliminar combo
+DELETE {{baseUrl}}/meals/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+### GET /orders/ — Listar pedidos (paginado)
+GET {{baseUrl}}/orders/?page=1&page_size=10
+
+### POST /orders/ — Crear pedido
+POST {{baseUrl}}/orders/
+Content-Type: application/json
+
+{
+  "document": "CC-12345678",
+  "meal_uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "quantity": 2,
+  "additional_info": "Hamburguesa sin cebolla, extra queso"
+}
+
+### PUT /orders/{uuid} — Marcar pedido como entregado
+PUT {{baseUrl}}/orders/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+Content-Type: application/json
+
+{
+  "timestamp": "2026-05-23T18:30:00Z"
+}
