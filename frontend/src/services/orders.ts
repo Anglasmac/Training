@@ -1,7 +1,7 @@
 import type { OrderCreate, OrderResponse, OrderUpdate } from '../models/orders';
 
 const VITE_BASE = import.meta.env.VITE_API_URL ?? '';
-const API_BASE_URL = VITE_BASE ? `${VITE_BASE.replace(/\/$/, '')}/api` : '/api';
+const API_BASE_URL = VITE_BASE ? VITE_BASE.replace(/\/$/, '') : '';
 
 export const orderService = {
   async getAll(): Promise<OrderResponse[]> {
