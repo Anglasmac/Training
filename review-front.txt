@@ -1,0 +1,7 @@
+1. Dashboard: Innecesario para el entrenamiento.
+2. La barra lateral funciona y se ve bien, pero la información del usuario, el nombre superior y la seccion de otros no es relevante.
+3. Clientes:
+	Crear clientes:
+		1. Cuando se borra el "CC-" del campo documento permite escribir sin el "CC-" completo.
+		2. No se crea el cliente y dice este error en el backend: "OPTIONS /api/customers/ HTTP/1.1" 404 Not Found
+		3. En el backend funciona "curl -X 'POST' 'http://localhost:8000/customers/' -H 'accept: application/json' -H 'Content-Type: application/json' -d '{"document_number": "CC-123123", "full_name": "Juan Quintero", "email": "juan@example.test", "phone_number": "3007905788", "address": "Calle 9a"}'"
