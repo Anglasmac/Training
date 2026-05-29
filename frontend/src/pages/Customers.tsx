@@ -183,15 +183,19 @@ const Customers = () => {
   };
 
   const formatDocument = (value: string): string => {
-    // Remove spaces and convert to uppercase
-    let formatted = value.trim().toUpperCase();
+    // Normalize: remove spaces and make uppercase
+    const v = value.replace(/\s+/g, '').toUpperCase();
+    // Remove any existing CC- prefix (allows user to type numbers)
+    const withoutPrefix = v.replace(/^CC-?/, '');
 
-    // If it doesn't contain a dash, assume it's just numbers and prepend CC-
-    if (!formatted.includes('-') && formatted.match(/^\d+$/)) {
-      formatted = `CC-${formatted}`;
-    }
+    // If empty, keep the visible prefix so users can't remove it completely
+    if (withoutPrefix === '') return 'CC-';
 
-    return formatted;
+    // If the remaining part is digits, always prefix with CC-
+    if (/^\d+$/.test(withoutPrefix)) return `CC-${withoutPrefix}`;
+
+    // Fallback: preserve user's input but keep CC- prefix
+    return `CC-${withoutPrefix}`;
   };
 
   const columns = [

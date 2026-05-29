@@ -1,4 +1,4 @@
-type ModuleId = 'dashboard' | 'customers' | 'meals' | 'orders';
+type ModuleId = 'customers' | 'meals' | 'orders';
 
 interface GlobalSidebarProps {
   activeModule: ModuleId;
@@ -7,36 +7,6 @@ interface GlobalSidebarProps {
 
 const Icon = ({ name }: { name: string }) => {
   switch (name) {
-    case 'dashboard':
-      return (
-        <svg
-          width='18'
-          height='18'
-          viewBox='0 0 24 24'
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-          className='nav-icon'
-        >
-          <rect
-            x='3'
-            y='3'
-            width='8'
-            height='8'
-            rx='2'
-            stroke='currentColor'
-            strokeWidth='1.4'
-          />
-          <rect
-            x='13'
-            y='3'
-            width='8'
-            height='18'
-            rx='2'
-            stroke='currentColor'
-            strokeWidth='1.4'
-          />
-        </svg>
-      );
     case 'customers':
       return (
         <svg
@@ -129,11 +99,6 @@ const Icon = ({ name }: { name: string }) => {
 };
 
 const modules: Array<{ id: ModuleId; label: string; description: string }> = [
-  {
-    id: 'dashboard',
-    label: 'Dashboard',
-    description: 'Vista general del sistema',
-  },
   { id: 'customers', label: 'Clientes', description: 'Gestión de clientes' },
   { id: 'meals', label: 'Combos', description: 'Gestión de menú' },
   { id: 'orders', label: 'Pedidos', description: 'Gestión de pedidos' },
@@ -192,32 +157,7 @@ const GlobalSidebar = ({ activeModule, onNavigate }: GlobalSidebarProps) => {
         </ul>
 
         <hr className='nav-sep' />
-
-        <div className='nav-heading'>Otros</div>
-        <ul className='nav-list small'>
-          <li className='nav-item'>
-            <button type='button' className='nav-button' title='Configuración'>
-              <Icon name='orders' />
-              <span className='nav-label'>Ajustes</span>
-            </button>
-          </li>
-        </ul>
       </nav>
-
-      <div className='profile-card'>
-        <img
-          alt='avatar'
-          src='https://i.pravatar.cc/40?img=12'
-          className='avatar'
-        />
-        <div className='profile-meta'>
-          <div className='profile-name'>John Holland</div>
-          <div className='profile-role'>Admin</div>
-        </div>
-        <button className='profile-actions' aria-label='Más acciones'>
-          ⋯
-        </button>
-      </div>
     </aside>
   );
 };
