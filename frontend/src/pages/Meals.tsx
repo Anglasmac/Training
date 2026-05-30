@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MealCard } from '../components/Card';
 import Button from '../components/Button';
 import Card from '../components/Card';
@@ -10,6 +10,7 @@ import type {
   CategoryEnum,
 } from '../models/meals';
 import { usePersistentList } from '../hooks/usePersistentList';
+import Pagination from '../components/Pagination';
 
 const categoryLabels: Record<string, string> = {
   HAMBURGERS_AND_HOTDOGS: 'Hamburguesas y Hot Dogs',
@@ -25,6 +26,11 @@ const Meals = () => {
   const [savedMeals, setSavedMeals] =
     usePersistentList<MealResponse>('createdMeals');
   const [meals, setMeals] = useState<MealResponse[]>(() => savedMeals);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingMeal, setEditingMeal] = useState<string | null>(null);
@@ -39,6 +45,34 @@ const Meals = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const loadMeals = useCallback(
+    async (pageToLoad = 1) => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await mealService.getAll(pageToLoad, pageSize);
+        setMeals(response.meals);
+        setTotalItems(response.total);
+        setTotalPages(response.total_pages);
+        setPage(response.page);
+        setIsSearching(false);
+      } catch {
+        setMeals(savedMeals);
+        setTotalItems(savedMeals.length);
+        setTotalPages(1);
+        setPage(1);
+        setError('No se pudo cargar la lista de combos');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize, savedMeals]
+  );
+
+  useEffect(() => {
+    void loadMeals(1);
+  }, [loadMeals]);
+
   const mergeMeal = (meal: MealResponse) => {
     setMeals(prev => [meal, ...prev.filter(item => item.uuid !== meal.uuid)]);
     setSavedMeals(prev => [
@@ -50,7 +84,7 @@ const Meals = () => {
   const handleSearchMeal = async (uuid: string) => {
     if (!uuid.trim()) {
       setSearchUuid('');
-      setMeals(savedMeals);
+      void loadMeals(page);
       return;
     }
 
@@ -59,9 +93,13 @@ const Meals = () => {
       setError(null);
       const meal = await mealService.getById(uuid.trim());
       setMeals([meal]);
+      setTotalItems(1);
+      setTotalPages(1);
+      setPage(1);
+      setIsSearching(true);
       setSuccess('Combo encontrado');
     } catch {
-      setMeals(savedMeals);
+      setMeals([]);
       setError('Combo no encontrado');
     } finally {
       setLoading(false);
@@ -86,10 +124,12 @@ const Meals = () => {
         const updatedMeal = await mealService.update(editingMeal, updateData);
         mergeMeal(updatedMeal);
         setSuccess('Combo actualizado correctamente');
+        await loadMeals(page);
       } else {
         const createdMeal = await mealService.create(formData);
         mergeMeal(createdMeal);
         setSuccess('Combo creado correctamente');
+        await loadMeals(1);
       }
       resetForm();
     } catch (err) {
@@ -120,6 +160,7 @@ const Meals = () => {
       setSuccess('Combo eliminado correctamente');
       setMeals(prev => prev.filter(meal => meal.uuid !== uuid));
       setSavedMeals(prev => prev.filter(meal => meal.uuid !== uuid));
+      await loadMeals(page);
     } catch {
       setError('Error al eliminar combo');
     } finally {
@@ -334,7 +375,11 @@ const Meals = () => {
 
         <Card
           title='Resultados'
-          subtitle='Combos encontrados en la sesión actual.'
+          subtitle={
+            totalItems > 0
+              ? `${totalItems} combo${totalItems === 1 ? '' : 's'} ${isSearching ? 'en búsqueda' : 'cargados'}`
+              : 'No hay combos disponibles'
+          }
           className='module-pane module-pane-wide'
         >
           <div className='meals-grid meals-grid-compact'>
@@ -360,6 +405,16 @@ const Meals = () => {
                 />
               ))}
           </div>
+          {!isSearching && totalPages > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={nextPage => void loadMeals(nextPage)}
+              loading={loading}
+            />
+          )}
         </Card>
       </div>
     </section>

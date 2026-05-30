@@ -53,6 +53,9 @@ export interface OrderResponseWithDetails extends OrderResponse {
 export interface OrderListResponse {
   orders: OrderResponse[];
   total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }
 
 // Order status enum for easier handling

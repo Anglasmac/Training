@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Table, { type TableColumn } from '../components/Table';
 import Button from '../components/Button';
 import Card from '../components/Card';
@@ -7,11 +7,16 @@ import { mealService } from '../services/meals';
 import { customerService } from '../services/customers';
 import type { OrderCreate, OrderResponse } from '../models/orders';
 import { usePersistentList } from '../hooks/usePersistentList';
+import Pagination from '../components/Pagination';
 
 const Orders = () => {
   const [savedOrders, setSavedOrders] =
     usePersistentList<OrderResponse>('createdOrders');
   const [orders, setOrders] = useState<OrderResponse[]>(() => savedOrders);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<OrderCreate>({
@@ -22,6 +27,33 @@ const Orders = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const loadOrders = useCallback(
+    async (pageToLoad = 1) => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await orderService.getAll(pageToLoad, pageSize);
+        setOrders(response.orders);
+        setTotalItems(response.total);
+        setTotalPages(response.total_pages);
+        setPage(response.page);
+      } catch {
+        setOrders(savedOrders);
+        setTotalItems(savedOrders.length);
+        setTotalPages(1);
+        setPage(1);
+        setError('No se pudo cargar la lista de pedidos');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize, savedOrders]
+  );
+
+  useEffect(() => {
+    void loadOrders(1);
+  }, [loadOrders]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +72,7 @@ const Orders = () => {
         ...prev.filter(order => order.uuid !== createdOrder.uuid),
       ]);
       setSuccess('Pedido creado correctamente');
+      await loadOrders(1);
       resetForm();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al crear pedido');
@@ -61,6 +94,7 @@ const Orders = () => {
         prev.map(order => (order.uuid === uuid ? updatedOrder : order))
       );
       setSuccess('Pedido marcado como entregado');
+      await loadOrders(page);
     } catch {
       setError('Error al actualizar pedido');
     } finally {
@@ -85,13 +119,15 @@ const Orders = () => {
     {
       key: 'total_with_iva',
       label: 'Total',
-      render: (value: unknown) => `$${(value as number).toFixed(2)}`,
+      render: (value: unknown) => `$${Number(value ?? 0).toFixed(2)}`,
     },
     {
       key: 'is_delivered',
       label: 'Estado',
       render: (value: unknown) => (
-        <span className={(value as boolean) ? 'status-delivered' : 'status-pending'}>
+        <span
+          className={(value as boolean) ? 'status-delivered' : 'status-pending'}
+        >
           {(value as boolean) ? 'Entregado' : 'Pendiente'}
         </span>
       ),
@@ -99,7 +135,8 @@ const Orders = () => {
     {
       key: 'order_date',
       label: 'Fecha',
-      render: (value: unknown) => new Date(value as string).toLocaleDateString('es-CO'),
+      render: (value: unknown) =>
+        new Date(value as string).toLocaleDateString('es-CO'),
     },
     {
       key: 'actions',
@@ -123,7 +160,7 @@ const Orders = () => {
   const pendingOrders = orders.filter(order => !order.is_delivered).length;
   const deliveredOrders = orders.filter(order => order.is_delivered).length;
   const totalRevenue = orders.reduce(
-    (sum, order) => sum + (order.total_with_iva || 0),
+    (sum, order) => sum + Number(order.total_with_iva || 0),
     0
   );
 
@@ -244,7 +281,11 @@ const Orders = () => {
 
         <Card
           title='Pedidos registrados'
-          subtitle='La tabla muestra solo los pedidos creados en la sesión actual.'
+          subtitle={
+            totalItems > 0
+              ? `${totalItems} pedido${totalItems === 1 ? '' : 's'} cargados`
+              : 'No hay pedidos para mostrar'
+          }
           className='module-pane module-pane-wide'
         >
           <Table
@@ -253,6 +294,16 @@ const Orders = () => {
             loading={loading}
             emptyMessage='No hay pedidos para mostrar'
           />
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={nextPage => void loadOrders(nextPage)}
+              loading={loading}
+            />
+          )}
         </Card>
       </div>
     </section>

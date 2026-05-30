@@ -714,7 +714,7 @@ select {
 }
 
 .module-workspace-orders {
-  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
 }
 
@@ -731,6 +731,10 @@ select {
   min-width: 0;
 }
 
+.module-workspace-meals > .module-pane-wide {
+  grid-column: 1 / -1;
+}
+
 .module-pane-sticky {
   position: sticky;
   top: 24px;
@@ -740,6 +744,10 @@ select {
   box-shadow: none;
   border: 1px solid rgba(31, 41, 51, 0.08);
   background: rgba(255, 255, 255, 0.88);
+}
+
+.module-workspace-orders .module-pane-wide {
+  width: 100%;
 }
 
 .search-section-compact {
@@ -757,20 +765,27 @@ select {
 
 .meals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-  padding-right: 200px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  padding-right: 0;
+  align-items: stretch;
 }
 
-/* FIX: equal-width columns, compact gap, centered */
 .meals-grid-compact {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 340px));
-  gap: 2px;
-  justify-content: start;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+  justify-content: stretch;
+  align-items: stretch;
+  padding-right: 0;
+  grid-auto-rows: 1fr;
 }
 
 .meals-grid-compact .meal-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 460px;
   box-shadow: none;
   border: 1px solid rgba(31, 41, 51, 0.08);
   background: #fffaf2;
@@ -783,7 +798,18 @@ select {
 }
 
 .meals-grid-compact .meal-card .card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   padding: 16px 16px 18px;
+}
+
+.meals-grid-compact .meal-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 4.2em;
 }
 
 .meals-grid-compact .meal-description {
@@ -795,13 +821,11 @@ select {
 }
 
 .meals-grid-compact .meal-actions {
-  position: absolute;
-  right: 22px;
-  bottom: 20px;
   display: flex;
-  flex-direction: column;
   gap: 10px;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .meals-grid-compact .meal-card .card-footer {
@@ -809,12 +833,14 @@ select {
 }
 
 .meals-grid-compact .meal-price {
-  margin-right: 8px;
   display: inline-block;
 }
 
 .meals-grid-compact .meal-footer {
-  padding-bottom: 54px;
+  margin-top: auto;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .meals-grid-compact .availability,
@@ -825,26 +851,6 @@ select {
 .meals-grid-compact .empty-state,
 .meals-grid-compact .loading {
   grid-column: 1 / -1;
-}
-
-/* Stagger cards on wider screens */
-@media (min-width: 900px) {
-  .meals-grid > * {
-    transition: margin-left 160ms ease;
-  }
-
-  .meals-grid > *:nth-child(2) {
-    margin-left: 160px;
-  }
-  .meals-grid > *:nth-child(3) {
-    margin-left: 200px;
-  }
-  .meals-grid > *:nth-child(4) {
-    margin-left: 240px;
-  }
-  .meals-grid > *:nth-child(5) {
-    margin-left: 280px;
-  }
 }
 
 /* ─── Empty state ────────────────────────────────────────── */
@@ -1082,6 +1088,7 @@ select {
   border: 1px solid rgba(31, 41, 51, 0.08);
   box-shadow: 0 36px 72px rgba(15, 23, 42, 0.1);
   max-width: 580px;
+  position: relative;
 }
 
 .meal-card:hover {
@@ -1101,9 +1108,10 @@ select {
 .meal-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   margin-bottom: 18px;
+  flex-wrap: wrap;
 }
 
 .meal-name {
@@ -1180,6 +1188,7 @@ select {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
+  flex-wrap: wrap;
 }
 
 .meal-price {
@@ -1281,10 +1290,9 @@ select {
 
 /* Bottom-left edit button */
 .meal-actions-left {
-  position: absolute;
-  left: 22px;
-  bottom: 18px;
+  position: static;
   z-index: 40;
+  margin-top: 14px;
 }
 
 .meal-actions-left .btn-edit {
@@ -1292,30 +1300,15 @@ select {
   border: 1px solid rgba(16, 185, 129, 0.12);
   color: #047857;
   box-shadow: 0 8px 20px rgba(6, 95, 70, 0.08);
-  width: 44px;
-  height: 44px;
   padding: 0;
+  min-width: 44px;
+  min-height: 44px;
   display: inline-grid;
   place-items: center;
 }
 
 .meal-actions-left .btn-icon {
   color: #047857;
-}
-
-/* Compact grid: positioned action buttons */
-.meals-grid-compact .meal-card .btn-delete {
-  position: absolute;
-  right: -18px;
-  bottom: -4px;
-  transform: none;
-}
-
-.meals-grid-compact .meal-card .btn-edit {
-  position: static;
-  right: auto;
-  top: auto;
-  transform: none;
 }
 
 /* ─── Search pill ────────────────────────────────────────── */

@@ -40,9 +40,14 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     fetch(`${API_BASE_URL}/orders/`),
   ]);
 
-  const customers: Record<string, unknown>[] = customersResp.ok ? await customersResp.json() : [];
-  const meals: { is_available?: boolean }[] = mealsResp.ok ? await mealsResp.json() : [];
-  const orders: { is_delivered?: boolean; total_with_iva?: number }[] = ordersResp.ok ? await ordersResp.json() : [];
+  const customers: Record<string, unknown>[] = customersResp.ok
+    ? await customersResp.json()
+    : [];
+  const meals: { is_available?: boolean }[] = mealsResp.ok
+    ? await mealsResp.json()
+    : [];
+  const orders: { is_delivered?: boolean; total_with_iva?: number }[] =
+    ordersResp.ok ? await ordersResp.json() : [];
 
   const mealsAvailable = meals.filter(m => m.is_available !== false).length;
 

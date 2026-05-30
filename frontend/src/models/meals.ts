@@ -55,6 +55,9 @@ export interface MealResponse extends MealBase {
 export interface MealListResponse {
   meals: MealResponse[];
   total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }
 
 // Validation functions (mirroring backend validation)

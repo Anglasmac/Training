@@ -7,11 +7,27 @@ import Orders from './pages/Orders';
 type ModuleId = 'customers' | 'meals' | 'orders';
 
 function App() {
-  const [module, setModule] = useState<ModuleId>('customers');
+  const [module, setModule] = useState<ModuleId>(() => {
+    try {
+      const stored = localStorage.getItem('activeModule') as ModuleId | null;
+      return stored ?? 'customers';
+    } catch {
+      return 'customers';
+    }
+  });
+
+  const navigate = (m: ModuleId) => {
+    try {
+      localStorage.setItem('activeModule', m);
+    } catch {
+      /* ignore */
+    }
+    setModule(m);
+  };
 
   return (
     <div className='app-shell'>
-      <GlobalSidebar activeModule={module} onNavigate={setModule} />
+      <GlobalSidebar activeModule={module} onNavigate={navigate} />
 
       <main className='main-content'>
         {module === 'customers' && <Customers />}

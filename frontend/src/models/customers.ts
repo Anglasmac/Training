@@ -40,6 +40,9 @@ export interface CustomerResponse extends CustomerBase {
 export interface CustomerListResponse {
   customers: CustomerResponse[];
   total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }
 
 // Validation functions (mirroring backend validation)

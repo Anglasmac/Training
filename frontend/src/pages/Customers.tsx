@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Table from '../components/Table';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Modal from '../components/Modal';
 import { customerService } from '../services/customers';
-import type { CustomerBase, CustomerCreate } from '../models/customers';
+import type { CustomerCreate, CustomerResponse } from '../models/customers';
 import { usePersistentList } from '../hooks/usePersistentList';
+import Pagination from '../components/Pagination';
 
-type CustomerRow = CustomerBase & { id?: number };
+type CustomerRow = CustomerResponse;
 
 const Customers = () => {
   const [createdCustomers, setCreatedCustomers] =
@@ -15,6 +16,11 @@ const Customers = () => {
   const [customers, setCustomers] = useState<CustomerRow[]>(
     () => createdCustomers
   );
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<string | null>(null);
@@ -30,6 +36,34 @@ const Customers = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const loadCustomers = useCallback(
+    async (pageToLoad = 1) => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await customerService.getAll(pageToLoad, pageSize);
+        setCustomers(response.customers);
+        setTotalItems(response.total);
+        setTotalPages(response.total_pages);
+        setPage(response.page);
+        setIsSearching(false);
+      } catch {
+        setCustomers(createdCustomers);
+        setTotalItems(createdCustomers.length);
+        setTotalPages(1);
+        setPage(1);
+        setError('No se pudo cargar la lista de clientes');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [createdCustomers, pageSize]
+  );
+
+  useEffect(() => {
+    void loadCustomers(1);
+  }, [loadCustomers]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +100,7 @@ const Customers = () => {
         setSuccess('Cliente actualizado correctamente');
         setEditingCustomer(null);
         resetForm();
+        await loadCustomers(page);
       } else {
         const createdCustomer = await customerService.create(formData);
         setCustomers(prev => [createdCustomer, ...prev]);
@@ -82,6 +117,7 @@ const Customers = () => {
           address: '',
         });
         setShowForm(false);
+        await loadCustomers(1);
       }
     } catch (error) {
       setError(
@@ -104,6 +140,10 @@ const Customers = () => {
       setError(null);
       const customer = await customerService.getByDocument(document);
       setCustomers([customer]);
+      setTotalItems(1);
+      setTotalPages(1);
+      setPage(1);
+      setIsSearching(true);
       setSuccess('Cliente encontrado');
     } catch {
       setError('Cliente no encontrado');
@@ -115,7 +155,7 @@ const Customers = () => {
 
   const handleClearSearch = () => {
     setSearchDocument('');
-    setCustomers(createdCustomers); // Show created customers instead of clearing completely
+    void loadCustomers(page);
     setError(null);
     setSuccess(null);
   };
@@ -154,6 +194,7 @@ const Customers = () => {
       );
       setDeleteModalOpen(false);
       setCustomerToDelete(null);
+      await loadCustomers(page);
     } catch {
       setError('Error al eliminar cliente');
       setDeleteModalOpen(false);
@@ -369,8 +410,8 @@ const Customers = () => {
         <Card
           title='Resultados'
           subtitle={
-            customers.length > 0
-              ? `${customers.length} registro${customers.length === 1 ? '' : 's'} visible${customers.length === 1 ? '' : 's'}`
+            totalItems > 0
+              ? `${totalItems} cliente${totalItems === 1 ? '' : 's'} ${isSearching ? 'en búsqueda' : 'cargados'}`
               : 'No hay clientes cargados en pantalla'
           }
           className='customers-panel'
@@ -381,6 +422,16 @@ const Customers = () => {
             loading={loading}
             emptyMessage='No hay clientes para mostrar'
           />
+          {!isSearching && totalPages > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={nextPage => void loadCustomers(nextPage)}
+              loading={loading}
+            />
+          )}
         </Card>
       </div>
 

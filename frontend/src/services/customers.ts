@@ -1,30 +1,40 @@
 import type {
   CustomerBase,
   CustomerCreate,
+  CustomerListResponse,
+  CustomerResponse,
   CustomerUpdate,
 } from '../models/customers';
+import { unwrapPaginatedResponse } from './listResponse';
 
 const API_BASE_URL = '/api';
 
 export const customerService = {
-  async getAll(): Promise<import('../models/customers').CustomerResponse[]> {
-    const response = await fetch(`${API_BASE_URL}/customers/`);
+  async getAll(page = 1, pageSize = 10): Promise<CustomerListResponse> {
+    const response = await fetch(
+      `${API_BASE_URL}/customers/?page=${page}&page_size=${pageSize}`
+    );
     if (!response.ok) throw new Error('Error al obtener lista de clientes');
-    return response.json();
+    const payload = await response.json();
+    const normalized = unwrapPaginatedResponse<
+      CustomerListResponse['customers'][number]
+    >(payload, 'customers');
+
+    return {
+      customers: normalized.items,
+      total: normalized.total,
+      page: normalized.page,
+      page_size: normalized.pageSize,
+      total_pages: normalized.totalPages,
+    };
   },
-  async getByDocument(
-    document: string
-  ): Promise<
-    CustomerBase & { uuid: string; created_at: string; updated_at?: string }
-  > {
+  async getByDocument(document: string): Promise<CustomerResponse> {
     const response = await fetch(`${API_BASE_URL}/customers/${document}`);
     if (!response.ok) throw new Error('Error al obtener cliente');
     return response.json();
   },
 
-  async create(
-    customer: CustomerCreate
-  ): Promise<CustomerBase & { uuid: string; created_at: string }> {
+  async create(customer: CustomerCreate): Promise<CustomerResponse> {
     const response = await fetch(`${API_BASE_URL}/customers/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
